@@ -1,0 +1,515 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shopping Cart</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family: Arial, sans-serif;
+
+            background-color: #f4f4f4;
+        }
+
+
+        header {
+            background-color: #222;
+
+            color: white;
+
+            padding: 20px;
+
+            text-align: center;
+        }
+
+
+        .container {
+            width: 90%;
+
+            max-width: 1000px;
+
+            margin: 30px auto;
+        }
+
+
+        .products {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 20px;
+        }
+
+
+        .product {
+            background-color: white;
+
+            padding: 20px;
+
+            text-align: center;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 3px 10px
+                rgba(0, 0, 0, 0.1);
+        }
+
+
+        .product h2 {
+            margin-top: 0;
+        }
+
+
+        .price {
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin: 10px;
+        }
+
+
+        .add-button {
+            background-color: #222;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+        }
+
+
+        .add-button:hover {
+            background-color: #444;
+        }
+
+
+        .cart {
+            background-color: white;
+
+            margin-top: 30px;
+
+            padding: 25px;
+
+            border-radius: 10px;
+        }
+
+
+        .cart-item {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom: 1px solid #ddd;
+
+            padding: 15px 0;
+        }
+
+
+        .quantity {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .quantity button {
+            width: 30px;
+
+            height: 30px;
+
+            border: none;
+
+            background-color: #ddd;
+
+            cursor: pointer;
+        }
+
+
+        .remove-button {
+            background-color: #e74c3c;
+
+            color: white;
+
+            border: none;
+
+            padding: 7px 12px;
+
+            border-radius: 4px;
+
+            cursor: pointer;
+        }
+
+
+        .total {
+            text-align: right;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            margin-top: 20px;
+        }
+
+
+        #clearCart {
+            width: 100%;
+
+            padding: 12px;
+
+            margin-top: 15px;
+
+            background-color: #222;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <header>
+
+        <h1>🛒 My Shopping Cart</h1>
+
+    </header>
+
+
+    <div class="container">
+
+
+        <!-- Products -->
+
+        <div class="products">
+
+
+            <div class="product">
+
+                <h2>Laptop</h2>
+
+                <p class="price">₹50,000</p>
+
+                <button
+                    class="add-button"
+                    onclick="addToCart('Laptop', 50000)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <div class="product">
+
+                <h2>Headphones</h2>
+
+                <p class="price">₹2,000</p>
+
+                <button
+                    class="add-button"
+                    onclick="addToCart('Headphones', 2000)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <div class="product">
+
+                <h2>Keyboard</h2>
+
+                <p class="price">₹1,500</p>
+
+                <button
+                    class="add-button"
+                    onclick="addToCart('Keyboard', 1500)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+            <div class="product">
+
+                <h2>Mouse</h2>
+
+                <p class="price">₹800</p>
+
+                <button
+                    class="add-button"
+                    onclick="addToCart('Mouse', 800)"
+                >
+                    Add to Cart
+                </button>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Shopping Cart -->
+
+        <div class="cart">
+
+            <h2>🛍️ Your Cart</h2>
+
+            <div id="cartItems"></div>
+
+
+            <div class="total">
+
+                Total: ₹<span id="total">0</span>
+
+            </div>
+
+
+            <button id="clearCart">
+                Clear Cart
+            </button>
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+
+        // Array to store cart items
+
+        let cart = [];
+
+
+        // Add product to cart
+
+        function addToCart(name, price) {
+
+
+            // Check if product already exists
+
+            const existingProduct =
+                cart.find(
+                    item => item.name === name
+                );
+
+
+            if (existingProduct) {
+
+                existingProduct.quantity++;
+
+            } else {
+
+                cart.push({
+
+                    name: name,
+
+                    price: price,
+
+                    quantity: 1
+
+                });
+
+            }
+
+
+            displayCart();
+
+        }
+
+
+        // Display cart
+
+        function displayCart() {
+
+
+            const cartItems =
+                document.getElementById("cartItems");
+
+
+            const totalElement =
+                document.getElementById("total");
+
+
+            cartItems.innerHTML = "";
+
+
+            let total = 0;
+
+
+            cart.forEach(function (item, index) {
+
+
+                total +=
+                    item.price *
+                    item.quantity;
+
+
+                const cartItem =
+                    document.createElement("div");
+
+
+                cartItem.className =
+                    "cart-item";
+
+
+                cartItem.innerHTML = `
+
+                    <div>
+
+                        <strong>
+                            ${item.name}
+                        </strong>
+
+                        <br>
+
+                        ₹${item.price}
+
+                    </div>
+
+
+                    <div class="quantity">
+
+                        <button
+                            onclick="decreaseQuantity(${index})"
+                        >
+                            -
+                        </button>
+
+
+                        <span>
+                            ${item.quantity}
+                        </span>
+
+
+                        <button
+                            onclick="increaseQuantity(${index})"
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        class="remove-button"
+                        onclick="removeItem(${index})"
+                    >
+                        Remove
+                    </button>
+
+                `;
+
+
+                cartItems.appendChild(cartItem);
+
+            });
+
+
+            totalElement.textContent = total;
+
+        }
+
+
+        // Increase quantity
+
+        function increaseQuantity(index) {
+
+            cart[index].quantity++;
+
+            displayCart();
+
+        }
+
+
+        // Decrease quantity
+
+        function decreaseQuantity(index) {
+
+
+            if (cart[index].quantity > 1) {
+
+                cart[index].quantity--;
+
+            } else {
+
+                cart.splice(index, 1);
+
+            }
+
+
+            displayCart();
+
+        }
+
+
+        // Remove item
+
+        function removeItem(index) {
+
+            cart.splice(index, 1);
+
+            displayCart();
+
+        }
+
+
+        // Clear cart
+
+        document
+            .getElementById("clearCart")
+            .addEventListener("click", function () {
+
+                cart = [];
+
+                displayCart();
+
+            });
+
+
+    </script>
+
+
+</body>
+
+</html>
+```
